@@ -1,7 +1,7 @@
 apiVersion: operator.external-secrets.io/v1alpha1
 kind: OperatorConfig
 metadata:
-  name: operatorconfig-sample
+  name: sample
 spec:
   # Default values copied from <project_dir>/helm-charts/external-secrets/values.yaml
   affinity: {}

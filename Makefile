@@ -29,14 +29,14 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # external-secrets.io/external-secrets-operator-bundle:$VERSION and external-secrets.io/external-secrets-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= external-secrets.io/external-secrets-operator
+IMAGE_TAG_BASE ?= quay.io/3scale/external-secrets-operator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
 BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 
 # Image URL to use all building/pushing image targets
-IMG ?= controller:latest
+IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
 
 all: docker-build
 
@@ -118,11 +118,11 @@ endif
 endif
 
 .PHONY: bundle
-bundle: kustomize ## Generate bundle manifests and metadata, then validate generated files.
-	operator-sdk generate kustomize manifests -q
+bundle: operator-sdk kustomize ## Generate bundle manifests and metadata, then validate generated files.
+	$(OPERATOR_SDK) generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
-	operator-sdk bundle validate ./bundle
+	$(KUSTOMIZE) build config/manifests | $(OPERATOR_SDK) generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+	$(OPERATOR_SDK) bundle validate ./bundle
 
 .PHONY: bundle-build
 bundle-build: ## Build the bundle image.
@@ -155,6 +155,9 @@ BUNDLE_IMGS ?= $(BUNDLE_IMG)
 # The image tag given to the resulting catalog image (e.g. make catalog-build CATALOG_IMG=example.com/operator-catalog:v0.2.0).
 CATALOG_IMG ?= $(IMAGE_TAG_BASE)-catalog:v$(VERSION)
 
+# Custom default catalog base image to append bundles to
+CATALOG_BASE_IMG ?= $(IMAGE_TAG_BASE)-catalog:latest
+
 # Set CATALOG_BASE_IMG to an existing catalog image tag to add $BUNDLE_IMGS to that image.
 ifneq ($(origin CATALOG_BASE_IMG), undefined)
 FROM_INDEX_OPT := --from-index $(CATALOG_BASE_IMG)
@@ -171,3 +174,106 @@ catalog-build: opm ## Build a catalog image.
 .PHONY: catalog-push
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
+
+#############################################
+#### Custom Targets with extra binaries #####
+#############################################
+
+# Download operator-sdk binary if necessary
+OPERATOR_SDK_RELEASE = v1.15.0
+OPERATOR_SDK = $(shell pwd)/bin/operator-sdk-$(OPERATOR_SDK_RELEASE)
+OPERATOR_SDK_DL_URL = https://github.com/operator-framework/operator-sdk/releases/download/$(OPERATOR_SDK_RELEASE)/operator-sdk_$(OS)_$(ARCH)
+operator-sdk:
+ifeq (,$(wildcard $(OPERATOR_SDK)))
+ifeq (,$(shell which $(OPERATOR_SDK) 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(shell pwd)/bin ;\
+	curl -sL -o $(OPERATOR_SDK) $(OPERATOR_SDK_DL_URL) ;\
+	chmod +x $(OPERATOR_SDK) ;\
+	}
+else
+OPERATOR_SDK = $(shell which $(OPERATOR_SDK))
+endif
+endif
+
+# Download kind locally if necessary
+KIND_RELEASE = v0.11.1
+KIND = $(shell pwd)/bin/kind-$(KIND_RELEASE)
+KIND_DL_URL = https://github.com/kubernetes-sigs/kind/releases/download/$(KIND_RELEASE)/kind-$(OS)-$(ARCH)
+kind:
+ifeq (,$(wildcard $(KIND)))
+ifeq (,$(shell which $(KIND) 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(shell pwd)/bin ;\
+	curl -sL -o $(KIND) $(KIND_DL_URL) ;\
+	chmod +x $(KIND) ;\
+	}
+else
+KIND = $(shell which $(KIND))
+endif
+endif
+
+# Download kuttl locally if necessary for e2e tests
+KUTTL_RELEASE = 0.9.0
+KUTTL = $(shell pwd)/bin/kuttl-v$(KUTTL_RELEASE)
+KUTTL_DL_URL = https://github.com/kudobuilder/kuttl/releases/download/v$(KUTTL_RELEASE)/kubectl-kuttl_$(KUTTL_RELEASE)_$(OS)_x86_64
+kuttl:
+ifeq (,$(wildcard $(KUTTL)))
+ifeq (,$(shell which $(KUTTL) 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(shell pwd)/bin ;\
+	curl -sL -o $(KUTTL) $(KUTTL_DL_URL) ;\
+	chmod +x $(KUTTL) ;\
+	}
+else
+KUTTL = $(shell which $(KUTTL))
+endif
+endif
+
+####################################################
+#### Custom Targets to publish release catalog #####
+####################################################
+##@ Release Catalog
+
+prepare-alpha-release: bundle ## Prepare alpha release
+
+prepare-stable-release: bundle ## Prepare stable release
+	$(MAKE) bundle CHANNELS=alpha,stable DEFAULT_CHANNEL=alpha
+
+catalog-retag-latest:
+	docker tag $(CATALOG_IMG) $(CATALOG_BASE_IMG)
+	$(MAKE) docker-push IMG=$(CATALOG_BASE_IMG)
+
+bundle-publish: bundle-build bundle-push catalog-build catalog-push catalog-retag-latest ## Publish new release in catalog
+
+get-new-release:
+	@hack/new-release.sh v$(VERSION)
+
+###################################################
+#### Custom Targets to manually test with Kind ####
+###################################################
+##@ Testing
+
+kind-create: export KUBECONFIG = ${PWD}/kubeconfig
+kind-create: kind ## Creates a k8s kind cluster
+	$(KIND) create cluster --wait 5m
+
+kind-delete: kind ## Deletes the k8s kind cluster
+	$(KIND) delete cluster
+
+kind-deploy: export KUBECONFIG = ${PWD}/kubeconfig
+kind-deploy: docker-build kind ## Deploys the operator in the k8s kind cluster
+	$(KIND) load docker-image $(IMG)
+	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
+	$(KUSTOMIZE) build config/default | kubectl apply -f -
+
+kind-undeploy: export KUBECONFIG = ${PWD}/kubeconfig
+kind-undeploy: kind ## Undeploys the operator in the k8s kind cluster
+	$(KUSTOMIZE) build config/default | kubectl delete -f -
+
+test-e2e: export KUBECONFIG = ${PWD}/kubeconfig
+test-e2e: kuttl kind-create kind-deploy  ## Run kuttl e2e tests in the k8s kind cluster
+	$(KUTTL) test

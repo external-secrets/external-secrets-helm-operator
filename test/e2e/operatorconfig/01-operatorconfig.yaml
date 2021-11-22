@@ -1,0 +1,6 @@
+apiVersion: operator.external-secrets.io/v1alpha1
+kind: OperatorConfig
+metadata:
+  name: instance
+  namespace: external-secrets-operator-system
+spec: {}
