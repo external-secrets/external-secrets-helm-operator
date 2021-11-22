@@ -1,0 +1,24 @@
+# permissions for end users to edit operatorconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: operatorconfig-editor-role
+rules:
+- apiGroups:
+  - operator.external-secrets.io
+  resources:
+  - operatorconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - operator.external-secrets.io
+  resources:
+  - operatorconfigs/status
+  verbs:
+  - get

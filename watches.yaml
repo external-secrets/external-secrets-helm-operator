@@ -1,0 +1,6 @@
+# Use the 'create api' subcommand to add watches to this file.
+- group: operator.external-secrets.io
+  version: v1alpha1
+  kind: OperatorConfig
+  chart: helm-charts/external-secrets
+#+kubebuilder:scaffold:watch
