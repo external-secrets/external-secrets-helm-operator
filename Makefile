@@ -275,5 +275,7 @@ kind-undeploy: kind ## Undeploys the operator in the k8s kind cluster
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 test-e2e: export KUBECONFIG = ${PWD}/kubeconfig
-test-e2e: kuttl kind-create kind-deploy  ## Run kuttl e2e tests in the k8s kind cluster
+test-e2e: kuttl  ## Run kuttl e2e tests in the k8s kind cluster
+	-$(MAKE) kind-create
+	$(MAKE) kind-deploy
 	$(KUTTL) test
