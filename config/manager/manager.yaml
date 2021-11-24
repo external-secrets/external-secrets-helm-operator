@@ -30,6 +30,11 @@ spec:
         - --leader-election-id=external-secrets-operator
         image: controller:latest
         name: manager
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['olm.targetNamespaces']
         securityContext:
           allowPrivilegeEscalation: false
         livenessProbe:
