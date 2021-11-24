@@ -259,7 +259,12 @@ get-new-release:
 
 kind-create: export KUBECONFIG = ${PWD}/kubeconfig
 kind-create: kind ## Creates a k8s kind cluster
+ifeq (1, $(shell $(KIND) get clusters | grep kind | wc -l))
+	@echo "Kind cluster already exists, doing nothing"
+else
+	@echo "Creating kind cluster"
 	$(KIND) create cluster --wait 5m
+endif
 
 kind-delete: kind ## Deletes the k8s kind cluster
 	$(KIND) delete cluster
@@ -274,8 +279,7 @@ kind-undeploy: export KUBECONFIG = ${PWD}/kubeconfig
 kind-undeploy: kind ## Undeploys the operator in the k8s kind cluster
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
+
 test-e2e: export KUBECONFIG = ${PWD}/kubeconfig
-test-e2e: kuttl  ## Run kuttl e2e tests in the k8s kind cluster
-	-$(MAKE) kind-create
-	$(MAKE) kind-deploy
+test-e2e: kuttl kind-create kind-deploy  ## Run kuttl e2e tests in the k8s kind cluster
 	$(KUTTL) test
