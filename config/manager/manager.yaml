@@ -43,11 +43,13 @@ spec:
             port: 8081
           initialDelaySeconds: 15
           periodSeconds: 20
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /readyz
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
+          timeoutSeconds: 5
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
