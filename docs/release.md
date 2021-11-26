@@ -1,8 +1,9 @@
 # Release
-
 * Update Makefile variable `VERSION` to the appropiate release version. Allowed formats:
-  * alpha: `VERSION ?= 0.1.0-alpha.3`
-  * stable: `VERSION ?= 0.1.0`
+  * alpha: `VERSION ?= 0.3.8-alpha.3` - Used for operator development before doing a final release
+  * stable: `VERSION ?= 0.3.8` - Used once alpha releases have been tested successfully
+* **IMPORTANT**: `VERSION` (having the `-alpha` suffix or not, **must coincide with the original helm chart release**, because it is used to download the original helm chart from [Git Hub](https://github.com/external-secrets/external-secrets/releases)
+
 
 ## Alpha
 * If it is an **alpha** release, execute the following target to create appropiate `alpha` bundle files:

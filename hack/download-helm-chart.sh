@@ -1,8 +1,8 @@
 #!/bin/bash
 
 REPO="https://github.com/external-secrets/external-secrets"
-HELM_CHART_VERSION="0.3.8"
 HELM_CHART_PATH="helm-charts/external-secrets"
+HELM_CHART_VERSION=`echo ${1} | awk '{split($0,a,"-alpha"); print a[1]}'`
 
 EXISTS=`grep -ir ${HELM_CHART_VERSION} ${HELM_CHART_PATH}/Chart.yaml | wc -l`
 

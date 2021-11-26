@@ -14,12 +14,12 @@ $ make undeploy
 ## OLM manual deploy
 * If you want to install a specific version of the operator via OLM on a **manual** way, you can use for example the following command:
 ```bash
-operator-sdk run bundle quay.io/3scale/external-secrets-operator-bundle:0.1.0-alpha.3 --namespace external-secrets
+operator-sdk run bundle quay.io/3scale/external-secrets-operator-bundle:0.3.8-alpha.3 --namespace external-secrets
 ```
 * Then create any `OperatorConfig` resource type (you can find an example [here](../config/samples/operator_v1alpha1_operatorconfig.yaml)).
 * If you want to test an operator upgrade of a newer version, execute for example:
 ```bash
-operator-sdk run bundle-upgrade quay.io/3scale/external-secrets-operator-bundle:0.1.0-alpha.4 --namespace external-secrets
+operator-sdk run bundle-upgrade quay.io/3scale/external-secrets-operator-bundle:0.3.8-alpha.4 --namespace external-secrets
 ```
 
 ## OLM automatic deploy
