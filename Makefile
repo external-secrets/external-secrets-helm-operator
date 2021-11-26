@@ -58,10 +58,10 @@ help: ## Display this help.
 
 ##@ Build
 
-run: helm-operator ## Run against the configured Kubernetes cluster in ~/.kube/config
+run: download-helm-chart helm-operator ## Run against the configured Kubernetes cluster in ~/.kube/config
 	$(HELM_OPERATOR) run
 
-docker-build: ## Build docker image with the manager.
+docker-build: download-helm-chart ## Build docker image with the manager.
 	docker build -t ${IMG} .
 
 docker-push: ## Push docker image with the manager.
@@ -234,6 +234,14 @@ endif
 endif
 
 ####################################################
+#### Custom Targets clones original helm chart #####
+####################################################
+##@ Download Helm Chart
+
+download-helm-chart: ## Download original helm chart into operator directory helm-charts/
+	@hack/download-helm-chart.sh
+
+####################################################
 #### Custom Targets to publish release catalog #####
 ####################################################
 ##@ Release Catalog
@@ -247,7 +255,7 @@ catalog-retag-latest:
 	docker tag $(CATALOG_IMG) $(CATALOG_BASE_IMG)
 	$(MAKE) docker-push IMG=$(CATALOG_BASE_IMG)
 
-bundle-publish: bundle-build bundle-push catalog-build catalog-push catalog-retag-latest ## Publish new release in catalog
+bundle-publish: test-e2e bundle-build bundle-push catalog-build catalog-push catalog-retag-latest ## Publish new release in catalog
 
 get-new-release:
 	@hack/new-release.sh v$(VERSION)

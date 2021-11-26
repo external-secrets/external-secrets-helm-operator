@@ -60,7 +60,7 @@ WARN[0006] Using default RBAC rules: failed to generate RBAC rules: failed to ge
 
 And then, the most important change done on predefined files was the operator `ClusterRole`, which needed extra permissions in order to be able to create all resources created by the Helm Chart ([commit](https://github.com/3scale-ops/external-secrets-operator/commit/ee344d8eddf683216af947b94b6c2a3ca6d7fe9a)).
 
-The rest of the changes are mostly cosmetic, a kind of k8s-operator-olm envelope for the real Helm Chart at [helm-charts/external-secrets](helm-charts/external-secrets/).
+The rest of the changes are mostly cosmetic, a kind of k8s-operator-olm envelope for the real Helm Chart that will be downloaded dynamically using helm chart version on every operator image build at [helm-charts/external-secrets](helm-charts/external-secrets/).
 
 ## Documentation
 

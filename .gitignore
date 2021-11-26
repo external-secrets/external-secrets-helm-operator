@@ -13,3 +13,4 @@ bin
 *.swo
 *~
 kubeconfig
+helm-charts/
