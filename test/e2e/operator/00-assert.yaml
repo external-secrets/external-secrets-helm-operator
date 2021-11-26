@@ -1,0 +1,24 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: external-secrets-operator-manager-role
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: external-secrets-operator-manager-rolebinding
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-secrets-operator-controller-manager
+  namespace: external-secrets-operator-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-secrets-operator-controller-manager
+  namespace: external-secrets-operator-system
+status:
+  readyReplicas: 1

@@ -1,0 +1,40 @@
+apiVersion: operator.external-secrets.io/v1alpha1
+kind: OperatorConfig
+metadata:
+  name: sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/external-secrets/values.yaml
+  affinity: {}
+  extraArgs: {}
+  extraEnv: []
+  fullnameOverride: ""
+  image:
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/external-secrets/external-secrets
+    tag: ""
+  imagePullSecrets: []
+  installCRDs: true
+  leaderElect: false
+  nameOverride: ""
+  nodeSelector: {}
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  priorityClassName: ""
+  prometheus:
+    enabled: false
+    service:
+      port: 8080
+  rbac:
+    create: true
+  replicaCount: 1
+  resources: {}
+  scopedNamespace: ""
+  securityContext: {}
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ""
+  tolerations: []
+  
+  
