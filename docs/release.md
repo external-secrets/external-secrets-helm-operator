@@ -22,4 +22,16 @@ make bundle-publish
 ```bash
 make prepare-stable-release
 ```
-* Then open a [Pull Request](https://github.com/3scale-ops/external-secrets-operator/pulls), and a GitHub Action will automatically detect if it is new release or not, in order to create it by building/pushing new operator, bundle and catalog images, as well as creating a GitHub release draft.
+* Then open a [Pull Request](https://github.com/external-secrets/external-secrets-helm-operator/pulls), and a GitHub Action will automatically detect if it is new release or not, in order to create it by building/pushing new operator, bundle and catalog images, as well as creating a GitHub release draft.
+
+## OperatorHub.io
+In order to make the latest release available to [OperatorHub.io](https://operatorhub.io/) we need to create a bundle and open a PR in the [community-operators](https://github.com/k8s-operatorhub/community-operators/) repository.
+
+
+```bash
+make prepare-stable-release
+```
+
+```bash
+make bundle-operatorhub
+```

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO="3scale-ops/external-secrets-operator"
+REPO="external-secrets/external-secrets-helm-operator"
 
 # Skip if alpha release
 [[ ${1} == *"-alpha"* ]] && echo "" && exit 0

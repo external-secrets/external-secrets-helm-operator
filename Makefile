@@ -28,8 +28,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
-# external-secrets.io/external-secrets-operator-bundle:$VERSION and external-secrets.io/external-secrets-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= quay.io/3scale/external-secrets-operator
+# external-secrets.io/external-secrets-helm-operator-bundle:$VERSION and external-secrets.io/external-secrets-helm-operator-catalog:$VERSION.
+IMAGE_TAG_BASE ?= ghcr.io/external-secrets/external-secrets-helm-operator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -101,6 +101,23 @@ KUSTOMIZE = $(shell which kustomize)
 endif
 endif
 
+.PHONY: yq
+YQ = $(shell pwd)/bin/yq
+yq: ## Download yq locally if necessary.
+ifeq (,$(wildcard $(YQ)))
+ifeq (,$(shell which yq 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(dir $(YQ)) ;\
+	curl -sSLo - https://github.com/mikefarah/yq/releases/download/v4.16.1/yq_linux_amd64.tar.gz | \
+	tar xzf - -C bin/ ;\
+	mv bin/yq_linux_amd64 bin/yq ;\
+	}
+else
+YQ = $(shell which yq)
+endif
+endif
+
 .PHONY: helm-operator
 HELM_OPERATOR = $(shell pwd)/bin/helm-operator
 helm-operator: ## Download helm-operator locally if necessary, preferring the $(pwd)/bin path over global if both exist.
@@ -117,10 +134,25 @@ HELM_OPERATOR = $(shell which helm-operator)
 endif
 endif
 
+.PHONY: upstream-crds
+upstream-crds: ## pull the upstream CRDs and put them into this repo
+	TMP=$(shell mktemp -d) && \
+		git clone --depth 1 --branch v$(VERSION) https://github.com/external-secrets/external-secrets.git $${TMP} && \
+		mkdir -p config/manifests/crds && \
+		cp -r $${TMP}/deploy/crds/* config/manifests/crds
+
+	@echo updating kustomize resources
+	cd config/manifests && \
+	for f in crds/*; do \
+		echo $$f; \
+		kustomize edit add resource $$f; \
+	done
+
 .PHONY: bundle
-bundle: operator-sdk kustomize ## Generate bundle manifests and metadata, then validate generated files.
+bundle: operator-sdk kustomize upstream-crds ## Generate bundle manifests and metadata, then validate generated files.
 	$(OPERATOR_SDK) generate kustomize manifests -q
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
+	$(YQ) e -i '.metadata.annotations.containerImage = "$(IMG)"' config/manifests/bases/external-secrets-operator.clusterserviceversion.yaml
 	$(KUSTOMIZE) build config/manifests | $(OPERATOR_SDK) generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 	$(OPERATOR_SDK) bundle validate ./bundle
 
@@ -131,6 +163,16 @@ bundle-build: ## Build the bundle image.
 .PHONY: bundle-push
 bundle-push: ## Push the bundle image.
 	$(MAKE) docker-push IMG=$(BUNDLE_IMG)
+
+.PHONY: bundle-operatorhub
+bundle-operatorhub: ## Add the bundle to community-operators repo
+	git clone https://github.com/k8s-operatorhub/community-operators
+	cp -r bundle community-operators/operators/external-secrets/$(VERSION)
+	cd community-operators && \
+		operator-sdk bundle validate ./$(VERSION) --select-optional suite=operatorframework && \
+		bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
+			kiwi,lemon,orange \
+  			operators/external-secrets/$(VERSION)
 
 .PHONY: opm
 OPM = ./bin/opm

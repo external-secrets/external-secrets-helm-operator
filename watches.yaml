@@ -3,4 +3,6 @@
   version: v1alpha1
   kind: OperatorConfig
   chart: helm-charts/external-secrets
+  overrideValues:
+    installCRDs: false
 #+kubebuilder:scaffold:watch

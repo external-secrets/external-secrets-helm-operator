@@ -1,4 +1,7 @@
 ## Append samples you want in your CSV to this file as resources ##
 resources:
 - operator_v1alpha1_operatorconfig.yaml
+- cluster_secret_store.yaml
+- secret_store.yaml
+- external_secret.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples
