@@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.3.9
+VERSION ?= 0.3.10
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -166,13 +166,13 @@ bundle-push: ## Push the bundle image.
 
 .PHONY: bundle-operatorhub
 bundle-operatorhub: ## Add the bundle to community-operators repo
+	@rm -rf community-operators || true
 	git clone https://github.com/k8s-operatorhub/community-operators
-	cp -r bundle community-operators/operators/external-secrets/$(VERSION)
+	cp -r bundle community-operators/operators/external-secrets-operator/$(VERSION)
 	cd community-operators && \
-		operator-sdk bundle validate ./$(VERSION) --select-optional suite=operatorframework && \
-		bash <(curl -sL https://raw.githubusercontent.com/redhat-openshift-ecosystem/community-operators-pipeline/ci/latest/ci/scripts/opp.sh) \
-			kiwi,lemon,orange \
-  			operators/external-secrets/$(VERSION)
+		operator-sdk bundle validate ./operators/external-secrets-operator/$(VERSION) --select-optional suite=operatorframework && \
+		git checkout -b feature/external-secrets-$(VERSION)
+	@echo -e "now go to repo, commit changes, push and open a PR \n> cd community-operators\n> git add . && git commit -s -m \"chore: bump external secrets $(VERSION)\" "
 
 .PHONY: opm
 OPM = ./bin/opm
