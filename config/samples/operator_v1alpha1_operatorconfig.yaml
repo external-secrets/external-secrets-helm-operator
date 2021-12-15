@@ -13,7 +13,7 @@ spec:
     repository: ghcr.io/external-secrets/external-secrets
     tag: ""
   imagePullSecrets: []
-  installCRDs: true
+  installCRDs: false
   leaderElect: false
   nameOverride: ""
   nodeSelector: {}
@@ -36,5 +36,5 @@ spec:
     create: true
     name: ""
   tolerations: []
-  
-  
+
+
