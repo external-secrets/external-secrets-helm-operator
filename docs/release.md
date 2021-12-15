@@ -30,8 +30,10 @@ In order to make the latest release available to [OperatorHub.io](https://operat
 
 ```bash
 make prepare-stable-release
+# then: commit & open pr
 ```
 
+Once the PR is merged we need to push the bundle to operatorhub.
 ```bash
 make bundle-operatorhub
 ```
