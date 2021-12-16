@@ -27,13 +27,24 @@ make prepare-stable-release
 ## OperatorHub.io
 In order to make the latest release available to [OperatorHub.io](https://operatorhub.io/) we need to create a bundle and open a PR in the [community-operators](https://github.com/k8s-operatorhub/community-operators/) repository.
 
+To create a bundle first increment the `VERSION` in the Makefile as described above. Then run the following commands in the root of the repository:
 
 ```bash
 make prepare-stable-release
-# then: commit & open pr
 ```
 
-Once the PR is merged we need to push the bundle to operatorhub.
+Check the generated files in the `bundle/` directory. If they look good add & commit them, open a PR against this repository. You can always use the [OperatorHub.io/preview](https://operatorhub.io/preview) page to preview the generated CSV.
+
+```bash
+git status
+git add .
+git commit -s -m "chore: bump version xyz"
+git push
+```
+
+Once the PR is merged we need create a pull request against the community-operators repository. there's a make target that does the heavy lifting for you:
 ```bash
 make bundle-operatorhub
 ```
+
+You then just need to push to your fork and open a PR against the community-operators repository. If you're a [reviewer](https://github.com/k8s-operatorhub/community-operators/blob/main/operators/external-secrets-operator/ci.yaml) the PR gets merged automatically. The website needs some time 10-30 minutes to display the latest changes.
