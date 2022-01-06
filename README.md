@@ -83,3 +83,5 @@ All bugs, tasks or enhancements are tracked as [GitHub issues](https://github.co
 ## License
 
 External Secrets Operator is under Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+
+*Note: This Helm Operator will deploy ESO (when you create the OperatorConfig) without the CRDs. With OLM this is not a problem since OLM manages and deploys the CRDs. If for some reason you plan to use this helm operator without OLM, you need to apply the ESO CRDs to you cluster at some point.*
