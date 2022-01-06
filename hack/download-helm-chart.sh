@@ -13,3 +13,5 @@ else
   rm -rf ${HELM_CHART_PATH}/*
   curl -sL ${REPO}/releases/download/helm-chart-${HELM_CHART_VERSION}/external-secrets-${HELM_CHART_VERSION}.tgz | tar xz -C helm-charts/
 fi
+sed -i "s|installCRDs: [^ ]*|installCRDs: false|g" ${HELM_CHART_PATH}/values.yaml
+rm -rf ${HELM_CHART_PATH}/templates/crds
