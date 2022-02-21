@@ -165,14 +165,8 @@ bundle-push: ## Push the bundle image.
 	$(MAKE) docker-push IMG=$(BUNDLE_IMG)
 
 .PHONY: bundle-operatorhub
-bundle-operatorhub: ## Add the bundle to community-operators repo
-	@rm -rf community-operators || true
-	git clone https://github.com/k8s-operatorhub/community-operators
-	cp -r bundle community-operators/operators/external-secrets-operator/$(VERSION)
-	cd community-operators && \
-		operator-sdk bundle validate ./operators/external-secrets-operator/$(VERSION) --select-optional suite=operatorframework && \
-		git checkout -b feature/external-secrets-$(VERSION)
-	@echo -e "now go to repo, commit changes, push and open a PR \n> cd community-operators\n> git add . && git commit -s -m \"chore: bump external secrets $(VERSION)\" "
+bundle-operatorhub: ## Add the bundle to all community-operators repos
+	./hack/bundle-operatorhub.sh $(VERSION)
 
 .PHONY: opm
 OPM = ./bin/opm
