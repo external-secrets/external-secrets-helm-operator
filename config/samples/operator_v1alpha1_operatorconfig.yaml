@@ -3,38 +3,113 @@ kind: OperatorConfig
 metadata:
   name: sample
 spec:
-  # Default values copied from <project_dir>/helm-charts/external-secrets/values.yaml
-  affinity: {}
-  extraArgs: {}
-  extraEnv: []
-  fullnameOverride: ""
-  image:
-    pullPolicy: IfNotPresent
-    repository: ghcr.io/external-secrets/external-secrets
-    tag: ""
-  imagePullSecrets: []
+  # this must be set to false when using olm
   installCRDs: false
-  leaderElect: false
+  # Default values copied from <project_dir>/helm-charts/external-secrets/values.yaml
+  replicaCount: 1
+  image:
+    repository: ghcr.io/external-secrets/external-secrets
+    pullPolicy: IfNotPresent
+    tag: ""
+  crds:
+    createClusterExternalSecret: true
+    createClusterSecretStore: true
+  imagePullSecrets: []
   nameOverride: ""
-  nodeSelector: {}
+  fullnameOverride: ""
+  leaderElect: false
+  controllerClass: ""
+  scopedNamespace: ""
+  scopedRBAC: false
+  processClusterExternalSecret: true
+  processClusterStore: true
+  createOperator: true
+  concurrent: 1
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+  rbac:
+    create: true
+  extraEnv: []
+  extraArgs: {}
+  deploymentAnnotations: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
-  priorityClassName: ""
+  securityContext: {}
+  resources: {}
   prometheus:
     enabled: false
     service:
       port: 8080
-  rbac:
-    create: true
-  replicaCount: 1
-  resources: {}
-  scopedNamespace: ""
-  securityContext: {}
-  serviceAccount:
-    annotations: {}
-    create: true
-    name: ""
+  nodeSelector: {}
   tolerations: []
-
-
+  affinity: {}
+  priorityClassName: ""
+  webhook:
+    create: true
+    certCheckInterval: "5m"
+    replicaCount: 1
+    certDir: /tmp/certs
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
+      pullPolicy: IfNotPresent
+      tag: ""
+    imagePullSecrets: []
+    nameOverride: ""
+    fullnameOverride: ""
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+      annotations: {}
+      name: ""
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    priorityClassName: ""
+    prometheus:
+      enabled: false
+      service:
+        port: 8080
+    extraEnv: []
+    extraArgs: {}
+    deploymentAnnotations: {}
+    podAnnotations: {}
+    podLabels: {}
+    podSecurityContext: {}
+    securityContext: {}
+    resources: {}
+  certController:
+    create: true
+    requeueInterval: "5m"
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
+      pullPolicy: IfNotPresent
+      tag: ""
+    imagePullSecrets: []
+    nameOverride: ""
+    fullnameOverride: ""
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+      annotations: {}
+      name: ""
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    priorityClassName: ""
+    prometheus:
+      enabled: false
+      service:
+        port: 8080
+    extraEnv: []
+    extraArgs: {}
+    deploymentAnnotations: {}
+    podAnnotations: {}
+    podLabels: {}
+    podSecurityContext: {}
+    securityContext: {}
+    resources: {}

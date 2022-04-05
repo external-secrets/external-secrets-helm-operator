@@ -28,6 +28,20 @@ rules:
   verbs:
   - create
 
+# the operator is going to install webhook config
+- apiGroups:
+  - "admissionregistration.k8s.io"
+  resources:
+  - "validatingwebhookconfigurations"
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+
 ##
 ## Rules for operator.external-secrets.io/v1alpha1, Kind: OperatorConfig
 ##
