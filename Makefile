@@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 0.4.4
+VERSION ?= 0.5.0
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -138,8 +138,7 @@ endif
 upstream-crds: ## pull the upstream CRDs and put them into this repo
 	TMP=$(shell mktemp -d) && \
 		git clone --depth 1 --branch v$(VERSION) https://github.com/external-secrets/external-secrets.git $${TMP} && \
-		mkdir -p config/manifests/crds && \
-		cp -r $${TMP}/deploy/crds/* config/manifests/crds
+		yq -Ns '"config/manifests/crds/" + .spec.names.singular' $${TMP}/deploy/crds/bundle.yaml
 
 	@echo updating kustomize resources
 	cd config/manifests && \

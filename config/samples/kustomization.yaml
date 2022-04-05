@@ -2,6 +2,7 @@
 resources:
 - operator_v1alpha1_operatorconfig.yaml
 - cluster_secret_store.yaml
+- cluster_external_secret.yaml
 - secret_store.yaml
 - external_secret.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples
