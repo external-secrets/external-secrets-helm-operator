@@ -143,10 +143,10 @@ upstream-crds: ## pull the upstream CRDs and put them into this repo
 	@echo updating kustomize resources
 	cd config/manifests && \
 	for f in crds/*; do \
-		if [[ $$f == "kustomization.yaml" ]];
-		then
-			continue
-		fi
+		if [[ $$f == "kustomization.yaml" ]]; \
+		then \
+			continue; \
+		fi; \
 		echo $$f; \
 		kustomize edit add resource $$f; \
 	done
