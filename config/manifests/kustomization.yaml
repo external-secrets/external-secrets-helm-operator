@@ -13,3 +13,9 @@ resources:
 - crds/clustersecretstore.yml
 - crds/externalsecret.yml
 - crds/secretstore.yml
+- crds/acraccesstoken.yml
+- crds/ecrauthorizationtoken.yml
+- crds/fake.yml
+- crds/gcraccesstoken.yml
+- crds/password.yml
+- crds/pushsecret.yml
