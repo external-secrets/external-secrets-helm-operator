@@ -126,4 +126,14 @@ rules:
   verbs:
   - '*'
 
+# Rules to allow serviceMonitor access
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - get
+  - create
+  - update
+
 #+kubebuilder:scaffold:rules
