@@ -132,8 +132,10 @@ rules:
   resources:
   - servicemonitors
   verbs:
-  - get
   - create
+  - get
+  - list
   - update
+  - watch
 
 #+kubebuilder:scaffold:rules
