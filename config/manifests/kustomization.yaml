@@ -19,3 +19,4 @@ resources:
 - crds/gcraccesstoken.yml
 - crds/password.yml
 - crds/pushsecret.yml
+- crds/vaultdynamicsecret.yml
