@@ -38,6 +38,9 @@ BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 # Image URL to use all building/pushing image targets
 IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
 
+# Enable attaching image digests to the bundle CSV
+ATTACH_IMAGE_DIGESTS ?= 1
+
 all: docker-build
 
 ##@ General
@@ -83,6 +86,7 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 	$(KUSTOMIZE) build config/default | kubectl delete -f -
 
 OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+OS_CAP := $(shell uname -s)
 ARCH := $(shell uname -m | sed 's/x86_64/amd64/')
 
 .PHONY: kustomize
@@ -153,6 +157,9 @@ bundle: operator-sdk kustomize upstream-crds ## Generate bundle manifests and me
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
 	$(YQ) e -i '.metadata.annotations.containerImage = "$(IMG)"' config/manifests/bases/external-secrets-operator.clusterserviceversion.yaml
 	$(KUSTOMIZE) build config/manifests | $(OPERATOR_SDK) generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+ifeq ($(ATTACH_IMAGE_DIGESTS),1))
+	$(MAKE) attach-image-digests
+endif
 	$(OPERATOR_SDK) bundle validate ./bundle
 
 .PHONY: bundle-build
@@ -166,6 +173,10 @@ bundle-push: ## Push the bundle image.
 .PHONY: bundle-operatorhub
 bundle-operatorhub: ## Add the bundle to all community-operators repos
 	./hack/bundle-operatorhub.sh $(VERSION)
+
+.PHONY: attach-image-digests
+attach-image-digests: crane ## Attach image digests to the bundle CSV
+	./hack/attach-image-digest.sh $(YQ) $(CRANE)
 
 .PHONY: opm
 OPM = ./bin/opm
@@ -215,7 +226,7 @@ catalog-push: ## Push a catalog image.
 #############################################
 
 # Download operator-sdk binary if necessary
-OPERATOR_SDK_RELEASE = v1.15.0
+OPERATOR_SDK_RELEASE = v1.19.0
 OPERATOR_SDK = $(shell pwd)/bin/operator-sdk-$(OPERATOR_SDK_RELEASE)
 OPERATOR_SDK_DL_URL = https://github.com/operator-framework/operator-sdk/releases/download/$(OPERATOR_SDK_RELEASE)/operator-sdk_$(OS)_$(ARCH)
 operator-sdk:
@@ -265,6 +276,24 @@ ifeq (,$(shell which $(KUTTL) 2>/dev/null))
 	}
 else
 KUTTL = $(shell which $(KUTTL))
+endif
+endif
+
+# Download crane binary if necessary
+CRANE_RELEASE = v0.14.0
+CRANE = $(shell pwd)/bin/crane
+CRANE_DL_URL = https://github.com/google/go-containerregistry/releases/download/$(CRANE_RELEASE)/go-containerregistry_$(OS_CAP)_$(ARCH).tar.gz
+crane:
+ifeq (,$(wildcard $(CRANE)))
+ifeq (,$(shell which $(CRANE) 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(shell pwd)/bin ;\
+	curl -Lv $(CRANE_DL_URL) | tar -xz -C $(shell pwd)/bin ;\
+	chmod +x $(CRANE) ;\
+	}
+else
+CRANE = $(shell which $(CRANE))
 endif
 endif
 
