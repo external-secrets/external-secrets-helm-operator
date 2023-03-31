@@ -157,7 +157,7 @@ bundle: operator-sdk kustomize upstream-crds ## Generate bundle manifests and me
 	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
 	$(YQ) e -i '.metadata.annotations.containerImage = "$(IMG)"' config/manifests/bases/external-secrets-operator.clusterserviceversion.yaml
 	$(KUSTOMIZE) build config/manifests | $(OPERATOR_SDK) generate bundle -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
-ifeq ($(ATTACH_IMAGE_DIGESTS),1))
+ifeq ($(ATTACH_IMAGE_DIGESTS),1)
 	$(MAKE) attach-image-digests
 endif
 	$(OPERATOR_SDK) bundle validate ./bundle
