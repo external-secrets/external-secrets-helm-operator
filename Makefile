@@ -282,7 +282,7 @@ endif
 # Download crane binary if necessary
 CRANE_RELEASE = v0.14.0
 CRANE = $(shell pwd)/bin/crane
-CRANE_DL_URL = https://github.com/google/go-containerregistry/releases/download/$(CRANE_RELEASE)/go-containerregistry_$(OS_CAP)_$(ARCH).tar.gz
+CRANE_DL_URL = https://github.com/google/go-containerregistry/releases/download/$(CRANE_RELEASE)/go-containerregistry_$(OS_CAP)_$(shell uname -m).tar.gz
 crane:
 ifeq (,$(wildcard $(CRANE)))
 ifeq (,$(shell which $(CRANE) 2>/dev/null))
