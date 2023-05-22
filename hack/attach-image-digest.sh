@@ -39,7 +39,7 @@ done
 # get unique refs only
 sorted_unique_refs=($(echo "${source_refs[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 
-echo  
+echo
 echo "The following refs were found:"
 for ref in "${sorted_unique_refs[@]}"
 do
@@ -51,7 +51,7 @@ echo
 for ref in "${sorted_unique_refs[@]}"
 do
   echo "Processing $ref..."
- 
+
   # if not a digest ref, skopeo inspect it.
   if ! [[ "$ref" =~ "@" ]]
   then
