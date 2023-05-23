@@ -16,5 +16,8 @@ jobs:
           path: ./bin
           key: ${{ runner.os }}-bin
 
+      - name: Build image
+        run: make docker-build
+
       - name: Run test-e2e
         run: make test-e2e

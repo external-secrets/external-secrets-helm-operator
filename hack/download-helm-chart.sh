@@ -13,5 +13,14 @@ else
   rm -rf ${HELM_CHART_PATH}/*
   curl -sL ${REPO}/releases/download/helm-chart-${HELM_CHART_VERSION}/external-secrets-${HELM_CHART_VERSION}.tgz | tar xz -C helm-charts/
 fi
-sed -i "s|installCRDs: [^ ]*|installCRDs: false|g" ${HELM_CHART_PATH}/values.yaml
+
+# apply patches to helm chart
+# 1: remove CRDs; they are managed by OLM
+yq e -i '.installCRDs = false' ${HELM_CHART_PATH}/values.yaml
 rm -rf ${HELM_CHART_PATH}/templates/crds
+
+# 2: reset runAsUser due to SCCs blocking runAsUser
+# see: https://github.com/external-secrets/external-secrets/issues/2342
+yq e -i '.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
+yq e -i '.webhook.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
+yq e -i '.certController.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
