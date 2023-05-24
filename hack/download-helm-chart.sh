@@ -22,5 +22,8 @@ rm -rf ${HELM_CHART_PATH}/templates/crds
 # 2: reset runAsUser due to SCCs blocking runAsUser
 # see: https://github.com/external-secrets/external-secrets/issues/2342
 yq e -i '.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
+yq e -i '.securityContext.seccompProfile = null' ${HELM_CHART_PATH}/values.yaml
 yq e -i '.webhook.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
+yq e -i '.webhook.securityContext.seccompProfile = null' ${HELM_CHART_PATH}/values.yaml
 yq e -i '.certController.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
+yq e -i '.certController.securityContext.seccompProfile = null' ${HELM_CHART_PATH}/values.yaml
