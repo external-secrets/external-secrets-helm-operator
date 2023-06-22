@@ -13,4 +13,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/external-secrets/external-secrets-helm-operator
-  newTag: v0.8.4
+  newTag: v0.9.0
