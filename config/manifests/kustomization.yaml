@@ -20,3 +20,4 @@ resources:
 - crds/password.yml
 - crds/pushsecret.yml
 - crds/vaultdynamicsecret.yml
+- crds/webhook.yml
