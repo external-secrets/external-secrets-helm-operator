@@ -21,3 +21,4 @@ resources:
 - crds/pushsecret.yml
 - crds/vaultdynamicsecret.yml
 - crds/webhook.yml
+- crds/githubaccesstoken.yml
