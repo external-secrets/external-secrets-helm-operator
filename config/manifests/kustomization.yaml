@@ -22,3 +22,4 @@ resources:
 - crds/vaultdynamicsecret.yml
 - crds/webhook.yml
 - crds/githubaccesstoken.yml
+- crds/uuid.yml

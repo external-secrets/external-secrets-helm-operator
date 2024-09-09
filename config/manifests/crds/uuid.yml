@@ -3,20 +3,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.2
-  labels:
-    external-secrets.io/component: controller
-  name: passwords.generators.external-secrets.io
+  name: uuids.generators.external-secrets.io
 spec:
   group: generators.external-secrets.io
   names:
     categories:
       - password
-    kind: Password
-    listKind: PasswordList
-    plural: passwords
+    kind: UUID
+    listKind: UUIDList
+    plural: uuids
     shortNames:
-      - password
-    singular: password
+      - uuids
+    singular: uuid
   scope: Namespaced
   versions:
     - name: v1alpha1
@@ -45,41 +43,7 @@ spec:
             metadata:
               type: object
             spec:
-              description: PasswordSpec controls the behavior of the password generator.
-              properties:
-                allowRepeat:
-                  default: false
-                  description: set AllowRepeat to true to allow repeating characters.
-                  type: boolean
-                digits:
-                  description: |-
-                    Digits specifies the number of digits in the generated
-                    password. If omitted it defaults to 25% of the length of the password
-                  type: integer
-                length:
-                  default: 24
-                  description: |-
-                    Length of the password to be generated.
-                    Defaults to 24
-                  type: integer
-                noUpper:
-                  default: false
-                  description: Set NoUpper to disable uppercase characters
-                  type: boolean
-                symbolCharacters:
-                  description: |-
-                    SymbolCharacters specifies the special characters that should be used
-                    in the generated password.
-                  type: string
-                symbols:
-                  description: |-
-                    Symbols specifies the number of symbol characters in the generated
-                    password. If omitted it defaults to 25% of the length of the password
-                  type: integer
-              required:
-                - allowRepeat
-                - length
-                - noUpper
+              description: UUIDSpec controls the behavior of the uuid generator.
               type: object
           type: object
       served: true
