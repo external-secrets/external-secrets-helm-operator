@@ -27,3 +27,8 @@ yq e -i '.webhook.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.ya
 yq e -i '.webhook.securityContext.seccompProfile = null' ${HELM_CHART_PATH}/values.yaml
 yq e -i '.certController.securityContext.runAsUser = null' ${HELM_CHART_PATH}/values.yaml
 yq e -i '.certController.securityContext.seccompProfile = null' ${HELM_CHART_PATH}/values.yaml
+
+# Patch remove the schema validation because it breaks the tests.
+# kuttl is unable to properly provide values and further,
+# helm --skip-schema-validation flag is not yet released.
+rm -fr ${HELM_CHART_PATH}/values.schema.json
