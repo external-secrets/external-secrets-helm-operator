@@ -23,3 +23,4 @@ resources:
 - crds/webhook.yml
 - crds/githubaccesstoken.yml
 - crds/uuid.yml
+- crds/stssessiontoken.yml
