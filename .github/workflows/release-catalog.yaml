@@ -1,0 +1,41 @@
+name: release-catalog
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - catalog/**/stable-channel.yaml
+
+jobs:
+  catalog:
+    name: Build and push the catalog release image
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - uses: actions/cache@v4.1.2
+        with:
+          key: ${{ runner.os }}-bin
+          path: ./bin
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push the catalog container image
+        run: make catalog-push
+
+      - name: Build and push the current catalog container image as latest
+        run: make catalog-push-latest
