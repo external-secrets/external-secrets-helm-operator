@@ -1,0 +1,118 @@
+---
+entries:
+  - name: external-secrets-operator.v0.3.8
+  - name: external-secrets-operator.v0.4.0
+    replaces: external-secrets-operator.v0.3.8
+  - name: external-secrets-operator.v0.4.2
+    replaces: external-secrets-operator.v0.4.0
+  - name: external-secrets-operator.v0.4.3
+    replaces: external-secrets-operator.v0.4.2
+  - name: external-secrets-operator.v0.4.4
+    replaces: external-secrets-operator.v0.4.3
+  - name: external-secrets-operator.v0.5.0
+    replaces: external-secrets-operator.v0.4.4
+  - name: external-secrets-operator.v0.5.1
+    replaces: external-secrets-operator.v0.5.0
+  - name: external-secrets-operator.v0.5.2
+    replaces: external-secrets-operator.v0.5.1
+  - name: external-secrets-operator.v0.5.3
+    replaces: external-secrets-operator.v0.5.2
+  - name: external-secrets-operator.v0.5.4
+    replaces: external-secrets-operator.v0.5.3
+  - name: external-secrets-operator.v0.5.5
+    replaces: external-secrets-operator.v0.5.4
+  - name: external-secrets-operator.v0.5.6
+    replaces: external-secrets-operator.v0.5.5
+  - name: external-secrets-operator.v0.5.7
+    replaces: external-secrets-operator.v0.5.6
+  - name: external-secrets-operator.v0.5.8
+    replaces: external-secrets-operator.v0.5.7
+  - name: external-secrets-operator.v0.5.9
+    replaces: external-secrets-operator.v0.5.8
+  - name: external-secrets-operator.v0.6.0
+    replaces: external-secrets-operator.v0.5.9
+  - name: external-secrets-operator.v0.6.1
+    replaces: external-secrets-operator.v0.6.0
+  - name: external-secrets-operator.v0.7.0
+    replaces: external-secrets-operator.v0.6.1
+  - name: external-secrets-operator.v0.7.1
+    replaces: external-secrets-operator.v0.7.0
+  - name: external-secrets-operator.v0.7.2
+    replaces: external-secrets-operator.v0.7.1
+  - name: external-secrets-operator.v0.8.0
+    replaces: external-secrets-operator.v0.7.2
+  - name: external-secrets-operator.v0.8.1
+    replaces: external-secrets-operator.v0.8.0
+  - name: external-secrets-operator.v0.8.2
+    replaces: external-secrets-operator.v0.8.1
+  - name: external-secrets-operator.v0.8.3
+    replaces: external-secrets-operator.v0.8.2
+  - name: external-secrets-operator.v0.8.4
+    replaces: external-secrets-operator.v0.8.3
+  - name: external-secrets-operator.v0.8.5
+    replaces: external-secrets-operator.v0.8.4
+  - name: external-secrets-operator.v0.8.6
+    replaces: external-secrets-operator.v0.8.5
+  - name: external-secrets-operator.v0.8.7
+    replaces: external-secrets-operator.v0.8.6
+  - name: external-secrets-operator.v0.9.0
+    replaces: external-secrets-operator.v0.8.7
+  - name: external-secrets-operator.v0.9.1
+    replaces: external-secrets-operator.v0.9.0
+  - name: external-secrets-operator.v0.9.10
+    replaces: external-secrets-operator.v0.9.1
+  - name: external-secrets-operator.v0.9.11
+    replaces: external-secrets-operator.v0.9.10
+  - name: external-secrets-operator.v0.9.12
+    replaces: external-secrets-operator.v0.9.11
+  - name: external-secrets-operator.v0.9.13
+    replaces: external-secrets-operator.v0.9.12
+  - name: external-secrets-operator.v0.9.14
+    replaces: external-secrets-operator.v0.9.13
+  - name: external-secrets-operator.v0.9.15-2
+    replaces: external-secrets-operator.v0.9.14
+  - name: external-secrets-operator.v0.9.16
+    replaces: external-secrets-operator.v0.9.15-2
+  - name: external-secrets-operator.v0.9.17
+    replaces: external-secrets-operator.v0.9.16
+  - name: external-secrets-operator.v0.9.18
+    replaces: external-secrets-operator.v0.9.17
+  - name: external-secrets-operator.v0.9.19
+    replaces: external-secrets-operator.v0.9.18
+  - name: external-secrets-operator.v0.9.2
+    replaces: external-secrets-operator.v0.9.19
+  - name: external-secrets-operator.v0.9.20
+    replaces: external-secrets-operator.v0.9.2
+  - name: external-secrets-operator.v0.9.3
+    replaces: external-secrets-operator.v0.9.20
+  - name: external-secrets-operator.v0.9.4
+    replaces: external-secrets-operator.v0.9.3
+  - name: external-secrets-operator.v0.9.5
+    replaces: external-secrets-operator.v0.9.4
+  - name: external-secrets-operator.v0.9.6
+    replaces: external-secrets-operator.v0.9.5
+  - name: external-secrets-operator.v0.9.7
+    replaces: external-secrets-operator.v0.9.6
+  - name: external-secrets-operator.v0.9.8
+    replaces: external-secrets-operator.v0.9.7
+  - name: external-secrets-operator.v0.9.9
+    replaces: external-secrets-operator.v0.9.8
+  - name: external-secrets-operator.v0.10.0
+    replaces: external-secrets-operator.v0.9.9
+  - name: external-secrets-operator.v0.10.1
+    replaces: external-secrets-operator.v0.10.0
+  - name: external-secrets-operator.v0.10.2
+    replaces: external-secrets-operator.v0.10.1
+  - name: external-secrets-operator.v0.10.3
+    replaces: external-secrets-operator.v0.10.2
+  - name: external-secrets-operator.v0.10.4
+    replaces: external-secrets-operator.v0.10.3
+  - name: external-secrets-operator.v0.10.5
+    replaces: external-secrets-operator.v0.10.4
+  - name: external-secrets-operator.v0.10.6
+    replaces: external-secrets-operator.v0.10.5
+  - name: external-secrets-operator.v0.10.7
+    replaces: external-secrets-operator.v0.10.6
+name: stable
+package: external-secrets-operator
+schema: olm.channel
