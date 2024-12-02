@@ -24,3 +24,4 @@ resources:
 - crds/githubaccesstoken.yml
 - crds/uuid.yml
 - crds/stssessiontoken.yml
+- crds/clustergenerator.yml
