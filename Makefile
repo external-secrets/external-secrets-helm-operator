@@ -171,14 +171,23 @@ $(KIND):
 	curl -sL -o $(KIND) $(KIND_DL_URL)
 	chmod +x $(KIND)
 
-## Download kuttl locally if necessary for e2e tests.
+# Download kuttl locally if necessary for e2e tests
 KUTTL_RELEASE = 0.9.0
 KUTTL = $(shell pwd)/bin/kuttl-v$(KUTTL_RELEASE)
 KUTTL_DL_URL = https://github.com/kudobuilder/kuttl/releases/download/v$(KUTTL_RELEASE)/kubectl-kuttl_$(KUTTL_RELEASE)_$(OS)_x86_64
-$(KUTTL):
-	mkdir -p $(shell pwd)/bin
-	curl -sL -o $(KUTTL) $(KUTTL_DL_URL)
-	chmod +x $(KUTTL)
+kuttl:
+ifeq (,$(wildcard $(KUTTL)))
+ifeq (,$(shell which $(KUTTL) 2>/dev/null))
+	@{ \
+	set -e ;\
+	mkdir -p $(shell pwd)/bin ;\
+	curl -sL -o $(KUTTL) $(KUTTL_DL_URL) ;\
+	chmod +x $(KUTTL) ;\
+	}
+else
+KUTTL = $(shell which $(KUTTL))
+endif
+endif
 
 # Download crane binary if necessary
 CRANE_RELEASE = v0.14.0
@@ -434,8 +443,8 @@ kind-deploy: kustomize $(KIND) ## Deploys the operator in the k8s kind cluster.
 		--file $(CONTAINER_FILE) $(CONTAINER_CTX)
 	$(KIND) load docker-image $(IMG)
 	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/testing | kubectl apply -f -
+	$(KUSTOMIZE) build config/default | kubectl apply -f -
 
 test-e2e: export KUBECONFIG = ${PWD}/kubeconfig
-test-e2e: kind-create kustomize kind-deploy $(KUTTL) ## Run kuttl e2e tests in the k8s kind cluster.
-	$(KUTTL)
+test-e2e: kuttl kind-create kind-deploy  ## Run kuttl e2e tests in the k8s kind cluster
+	$(KUTTL) test
